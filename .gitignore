@@ -216,3 +216,33 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# ===== MeetingAgent 项目规则 =====
+
+# 模型权重（约 3.1 GB，不入库；获取方式见 edge_computing/ai_models/README.md）
+*.fmodel
+*.dlc
+edge_computing/ai_models/embedding_models/bge-small-zh-v1.5/model.onnx
+edge_computing/speech/models/asr/model.onnx
+edge_computing/speech/models/embedding.onnx
+edge_computing/speech/models/silero_vad.onnx
+
+# 个人声纹注册档案（生物特征数据，不入库；用 speaker_enroll.py 重新注册）
+edge_computing/speech/data/enrolled/*.json
+
+# 板端运行时数据
+edge_computing/data/meetings/
+edge_computing/data/memory/
+edge_computing/speech/data/recordings/*
+!edge_computing/speech/data/recordings/.gitkeep
+edge_computing/speech/Log/*
+!edge_computing/speech/Log/.gitkeep
+edge_computing/speech/output/*
+!edge_computing/speech/output/.gitkeep
+edge_computing/speech/output/doa/
+
+# 环境与密钥
+.env
+edge_computing/**/qcom_6490_license/
+*.pem
+license.bin

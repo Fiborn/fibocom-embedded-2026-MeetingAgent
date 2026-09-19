@@ -1,0 +1,2 @@
+# 将下载的 sherpa-onnx 声纹 .onnx 模型放在此目录
+# 并修改 config.py 中的 MODEL_PATH

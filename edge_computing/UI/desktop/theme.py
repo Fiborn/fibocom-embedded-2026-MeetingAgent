@@ -1,0 +1,35 @@
+# -*- coding: utf-8 -*-
+"""Meeting Agent 桌面 UI 视觉常量（1920x1080 触摸友好）。"""
+
+# 冷石板 + 青绿强调，避免紫系/奶油陶土
+BG = "#0B1216"
+BG_PANEL = "#121C22"
+BG_RAIL = "#0F171C"
+BG_CARD = "#162229"
+FG = "#E7EEF2"
+FG_MUTED = "#8FA3AD"
+FG_DIM = "#5E727C"
+ACCENT = "#2BB8A8"
+ACCENT_DIM = "#1A7A70"
+WARN = "#E0A23A"
+DANGER = "#D65A5A"
+OK = "#3DBE7A"
+BORDER = "#24343C"
+REC_GLOW = "#FF5A5A"
+
+FONT_FAMILY = "Noto Sans CJK SC"
+FONT_MONO = "Noto Sans Mono CJK SC"
+
+FONT_BRAND = (FONT_FAMILY, 28, "bold")
+FONT_H1 = (FONT_FAMILY, 22, "bold")
+FONT_H2 = (FONT_FAMILY, 16, "bold")
+FONT_BODY = (FONT_FAMILY, 15)
+FONT_BODY_LG = (FONT_FAMILY, 17)
+FONT_BTN = (FONT_FAMILY, 16, "bold")
+FONT_STATUS = (FONT_FAMILY, 13)
+FONT_TRANSCRIPT = (FONT_FAMILY, 18)
+
+# 触摸目标
+BTN_H = 64
+NAV_W = 220
+CTRL_H = 96

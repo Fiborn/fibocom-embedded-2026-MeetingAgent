@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Meeting Agent</title>
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/static/css/app.css" />
+</head>
+<body>
+  <div class="atmosphere" aria-hidden="true">
+    <div class="scanlines"></div>
+    <div class="beam"></div>
+  </div>
+
+  <header class="top">
+    <div class="brand-block">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 48 48" width="44" height="44">
+          <polygon points="24,4 44,16 44,32 24,44 4,32 4,16" class="hex-outer"/>
+          <polygon points="24,12 36,19 36,29 24,36 12,29 12,19" class="hex-inner"/>
+          <circle cx="24" cy="24" r="3.5" class="hex-core"/>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-row">
+          <h1 class="brand">Meeting Agent</h1>
+          <span class="chip">QCS6490</span>
+        </div>
+        <p class="tagline">
+          <span class="mono">SYS.LIVE</span>
+          <span class="sep">/</span>
+          SC171 实时会议助手
+        </p>
+      </div>
+    </div>
+
+    <div class="telemetry" aria-hidden="true">
+      <div class="tele-item"><span>CH</span><b id="teleCh">4</b></div>
+      <div class="tele-item"><span>SR</span><b>16k</b></div>
+      <div class="tele-item"><span>LINK</span><b id="teleLink">SSE</b></div>
+      <div class="tele-item"><span>CLK</span><b id="teleClock">--:--:--</b></div>
+    </div>
+
+    <div class="status-hud" id="statusPill" data-phase="booting">
+      <span class="rec-dot" id="recDot"></span>
+      <div class="status-copy">
+        <span class="status-kicker">STATUS</span>
+        <span id="statusText">正在初始化…</span>
+      </div>
+    </div>
+
+    <div class="top-actions">
+      <button class="btn btn-primary" id="btnStartTop" type="button"><i></i>启动</button>
+      <button class="btn btn-ghost danger" id="btnCloseTop" type="button">关闭</button>
+    </div>
+  </header>
+
+  <div class="shell">
+    <nav class="rail" aria-label="功能导航">
+      <p class="rail-label">NAV // MODULES</p>
+      <button class="nav-item active" data-page="live" type="button">
+        <span class="nav-idx">01</span>实时会议
+      </button>
+      <button class="nav-item" data-page="summary" type="button">
+        <span class="nav-idx">02</span>会议总结
+      </button>
+      <button class="nav-item" data-page="agenda" type="button">
+        <span class="nav-idx">03</span>会议日程
+      </button>
+      <button class="nav-item" data-page="history" type="button">
+        <span class="nav-idx">04</span>历史记录
+      </button>
+      <button class="nav-item" data-page="enroll" type="button">
+        <span class="nav-idx">05</span>声纹注册
+      </button>
+      <div class="rail-spacer"></div>
+      <div class="rail-panel">
+        <div class="mini-grid" aria-hidden="true"></div>
+        <p class="rail-hint">STREAM · SPEAKER · DOA</p>
+      </div>
+    </nav>
+
+    <main class="stage">
+      <section class="page active" id="page-live" data-page="live">
+        <div class="hero-strip">
+          <div>
+            <p class="page-kicker">CHANNEL · TRANSCRIPT</p>
+            <h2 class="page-title">实时转写</h2>
+            <p class="page-sub">说话人标签会随语音自动更新</p>
+          </div>
+          <div class="live-meter" id="liveMeter" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+        <div class="hud-frame">
+          <span class="corner tl"></span><span class="corner tr"></span>
+          <span class="corner bl"></span><span class="corner br"></span>
+          <div class="frame-scan" aria-hidden="true"></div>
+          <div class="transcript-plane" id="transcript">
+            <div class="empty-hint" id="emptyHint">
+              <span class="mono">&gt; AWAITING COMMAND</span>
+              <br />系统就绪后，点击「启动」开始会议
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="page-summary" data-page="summary">
+        <div class="hero-strip">
+          <div>
+            <p class="page-kicker">AI · SUMMARY</p>
+            <h2 class="page-title">会议总结</h2>
+            <p class="page-sub">基于本场转写生成</p>
+          </div>
+        </div>
+        <div class="hud-frame">
+          <span class="corner tl"></span><span class="corner tr"></span>
+          <span class="corner bl"></span><span class="corner br"></span>
+          <div class="doc-plane" id="summaryDoc"></div>
+        </div>
+      </section>
+
+      <section class="page" id="page-agenda" data-page="agenda">
+        <div class="hero-strip">
+          <div>
+            <p class="page-kicker">AI · AGENDA</p>
+            <h2 class="page-title">会议日程</h2>
+            <p class="page-sub">行动项与负责人提炼</p>
+          </div>
+        </div>
+        <div class="hud-frame">
+          <span class="corner tl"></span><span class="corner tr"></span>
+          <span class="corner bl"></span><span class="corner br"></span>
+          <div class="doc-plane" id="agendaDoc"></div>
+        </div>
+      </section>
+
+      <section class="page" id="page-history" data-page="history">
+        <div class="hero-strip">
+          <div>
+            <p class="page-kicker">ARCHIVE · LOG</p>
+            <h2 class="page-title">历史记录</h2>
+            <p class="page-sub">回顾过往转写</p>
+          </div>
+          <button class="btn btn-ghost" id="btnRefreshHistory" type="button">刷新</button>
+        </div>
+        <div class="history-grid">
+          <aside class="history-list hud-frame tight" id="historyList">
+            <span class="corner tl"></span><span class="corner tr"></span>
+            <span class="corner bl"></span><span class="corner br"></span>
+          </aside>
+          <article class="hud-frame tight history-view-wrap">
+            <span class="corner tl"></span><span class="corner tr"></span>
+            <span class="corner bl"></span><span class="corner br"></span>
+            <div class="doc-plane history-view" id="historyView"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="page" id="page-enroll" data-page="enroll">
+        <div class="hero-strip">
+          <div>
+            <p class="page-kicker">SPEAKER · ENROLL</p>
+            <h2 class="page-title">声纹注册</h2>
+            <p class="page-sub">会前录入姓名与声纹，开会时优先识别为真名</p>
+          </div>
+          <button class="btn btn-ghost" id="btnRefreshEnroll" type="button">刷新列表</button>
+        </div>
+        <div class="enroll-grid">
+          <div class="hud-frame enroll-form-card">
+            <span class="corner tl"></span><span class="corner tr"></span>
+            <span class="corner bl"></span><span class="corner br"></span>
+            <label class="enroll-label" for="enrollName">姓名</label>
+            <div class="enroll-name-row">
+              <input
+                class="enroll-input"
+                id="enrollName"
+                type="text"
+                maxlength="20"
+                placeholder="点右侧「键盘」输入，例如：张三"
+                autocomplete="off"
+                inputmode="none"
+                readonly
+              />
+              <button class="btn btn-ghost" id="btnEnrollKeyboard" type="button">键盘</button>
+              <button class="btn btn-muted" id="btnEnrollClearName" type="button">清空</button>
+            </div>
+            <div class="osk" id="enrollOsk" hidden>
+              <div class="osk-tabs">
+                <button type="button" class="osk-tab active" data-osk="zh">中文点选</button>
+                <button type="button" class="osk-tab" data-osk="en">英文</button>
+                <button type="button" class="osk-tab" data-osk="num">数字</button>
+              </div>
+              <div class="osk-panel active" data-panel="zh">
+                <p class="osk-hint">先点姓，再点名（可多选）</p>
+                <div class="osk-section-title">常见姓</div>
+                <div class="osk-keys" id="oskSurname"></div>
+                <div class="osk-section-title">常用名用字</div>
+                <div class="osk-keys" id="oskGiven"></div>
+              </div>
+              <div class="osk-panel" data-panel="en">
+                <div class="osk-keys osk-qwerty" id="oskEn"></div>
+              </div>
+              <div class="osk-panel" data-panel="num">
+                <div class="osk-keys osk-num" id="oskNum"></div>
+              </div>
+              <div class="osk-actions">
+                <button type="button" class="btn btn-warn" id="oskBackspace">删除</button>
+                <button type="button" class="btn btn-ghost" id="oskHide">收起键盘</button>
+              </div>
+            </div>
+            <label class="enroll-label" for="enrollSec">录音时长</label>
+            <select class="enroll-input" id="enrollSec">
+              <option value="10">10 秒</option>
+              <option value="15" selected>15 秒（推荐）</option>
+              <option value="20">20 秒</option>
+            </select>
+            <p class="enroll-tip">
+              请在安静环境中，用正常音量连续朗读一段话（自我介绍即可）。
+              会议进行中无法注册；同名再次注册会融合更新声纹。
+            </p>
+            <div class="enroll-actions">
+              <button class="btn btn-primary lg" id="btnEnrollStart" type="button">
+                <i></i>开始注册
+              </button>
+            </div>
+            <div class="enroll-progress" id="enrollProgress" hidden>
+              <div class="enroll-bar"><span id="enrollBar"></span></div>
+              <p class="enroll-progress-text" id="enrollProgressText">准备中…</p>
+            </div>
+          </div>
+          <div class="hud-frame enroll-list-card">
+            <span class="corner tl"></span><span class="corner tr"></span>
+            <span class="corner bl"></span><span class="corner br"></span>
+            <p class="enroll-list-title">已注册说话人</p>
+            <div class="enroll-list" id="enrollList">
+              <p class="enroll-empty">暂无注册，请先录入</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="dock">
+    <div class="dock-rail" aria-hidden="true"></div>
+    <button class="btn btn-primary lg" id="btnStart" type="button"><i></i>启动</button>
+    <button class="btn btn-warn lg" id="btnPause" type="button" disabled>暂停</button>
+    <button class="btn btn-ok lg" id="btnResume" type="button" disabled>继续</button>
+    <button class="btn btn-muted lg" id="btnEnd" type="button" disabled>结束</button>
+    <button class="btn btn-danger lg" id="btnQuit" type="button" disabled>放弃</button>
+    <button class="btn btn-ghost lg" id="btnSummary" type="button">生成总结</button>
+    <button class="btn btn-ghost lg" id="btnAgenda" type="button">生成日程</button>
+  </footer>
+
+  <div class="toast" id="toast" hidden></div>
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
